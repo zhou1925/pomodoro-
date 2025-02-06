@@ -101,27 +101,6 @@ const PomodoroTimer = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
       <h1 className="text-3xl font-bold mb-8">Pomodoro Timer</h1>
 
-      {/* Progress Indicator */}
-      <div
-        className="radial-progress mb-8"
-        style={{
-          "--value": (timeLeft / (sessionType === 'work' ? preset.work * 60 : sessionType === 'break' ? preset.shortBreak * 60 : preset.longBreak * 60)) * 100,
-          "--size": "12rem",
-          "--thickness": "2rem",
-        }}
-        role="progressbar"
-      >
-        {Math.floor(
-          (timeLeft /
-            (sessionType === 'work'
-              ? preset.work * 60
-              : sessionType === 'break'
-              ? preset.shortBreak * 60
-              : preset.longBreak * 60)) *
-            100
-        )}
-        %
-      </div>
 
       {/* Timer Display */}
       <div className="grid grid-flow-col gap-5 text-center auto-cols-max mb-8">
