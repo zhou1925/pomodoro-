@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const PomodoroTimer = () => {
-  const [timeLeft, setTimeLeft] = useState(5); // Default 25 minutes
+  const [timeLeft, setTimeLeft] = useState(5); // Default 5 seconds for testing
   const [isRunning, setIsRunning] = useState(false);
-  const [sessionType, setSessionType] = useState('work'); // 'work' or 'break'
+  const [timerType, setTimerType] = useState('work'); // 'work' or 'break'
   const [pomodoroCount, setPomodoroCount] = useState(0);
   const [autoStart, setAutoStart] = useState(false);
   const [preset, setPreset] = useState({ work: 25, shortBreak: 5, longBreak: 15 });
@@ -30,7 +30,7 @@ const PomodoroTimer = () => {
         setTimeLeft((prevTime) => {
           if (prevTime === 0) {
             clearInterval(intervalRef.current);
-            handleSessionEnd();
+            handleTimerEnd();
             return 0;
           }
           return prevTime - 1;
@@ -48,28 +48,28 @@ const PomodoroTimer = () => {
     clearInterval(intervalRef.current);
     setIsRunning(false);
     setTimeLeft(preset.work * 60);
-    setSessionType('work');
+    setTimerType('work');
     setPomodoroCount(0);
   };
 
-  const handleSessionEnd = () => {
+  const handleTimerEnd = () => {
     let soundFile;
 
-    if (sessionType === 'work') {
+    if (timerType === 'work') {
       setPomodoroCount((prevCount) => prevCount + 1);
       if (pomodoroCount + 1 === 4) {
-        setSessionType('longBreak');
+        setTimerType('longBreak');
         setTimeLeft(preset.longBreak * 60);
         soundFile = '/sounds/long-break-start.mp3'; // Long break sound
       } else {
-        setSessionType('break');
+        setTimerType('break');
         setTimeLeft(preset.shortBreak * 60);
         soundFile = '/sounds/break-start.mp3'; // Short break sound
       }
     } else {
-      setSessionType('work');
+      setTimerType('work');
       setTimeLeft(preset.work * 60);
-      soundFile = '/sounds/work-start.mp3'; // Work session sound
+      soundFile = '/sounds/work-start.mp3'; // Work timer sound
     }
 
     playSound(soundFile); // Play the appropriate sound
@@ -80,14 +80,14 @@ const PomodoroTimer = () => {
   };
 
   useEffect(() => {
-    if (sessionType === 'work') {
+    if (timerType === 'work') {
       setTimeLeft(preset.work * 60);
-    } else if (sessionType === 'break') {
+    } else if (timerType === 'break') {
       setTimeLeft(preset.shortBreak * 60);
-    } else if (sessionType === 'longBreak') {
+    } else if (timerType === 'longBreak') {
       setTimeLeft(preset.longBreak * 60);
     }
-  }, [preset, sessionType]);
+  }, [preset, timerType]);
 
   useEffect(() => {
     return () => clearInterval(intervalRef.current);
@@ -100,7 +100,6 @@ const PomodoroTimer = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
       <h1 className="text-3xl font-bold mb-8">Pomodoro Timer</h1>
-
 
       {/* Timer Display */}
       <div className="grid grid-flow-col gap-5 text-center auto-cols-max mb-8">
@@ -140,7 +139,7 @@ const PomodoroTimer = () => {
             onChange={(e) => setAutoStart(e.target.checked)}
             className="checkbox checkbox-md"
           />
-          <span>Auto-start next session</span>
+          <span>Auto-start next timer</span>
         </label>
       </div>
 
@@ -165,10 +164,10 @@ const PomodoroTimer = () => {
         </button>
       </div>
 
-      {/* Session Info */}
+      {/* Timer Info */}
       <div className="text-center">
         <p className="text-lg">
-          Session: <span className="font-bold">{sessionType}</span>
+          Timer: <span className="font-bold">{timerType}</span>
         </p>
         <p className="text-lg">
           Pomodoros Completed: <span className="font-bold">{pomodoroCount}</span>
